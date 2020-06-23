@@ -2,20 +2,20 @@ package com.aaa.entity;
 
 import java.util.List;
 
-public class PageInfo {
+public class LayUiTable {
     private Integer code;
     private String msg;
     private Integer count;
     private List<?> data;
 
-    public PageInfo(Integer code, String msg, Integer count, List<?> data) {
+    public LayUiTable(Integer code, String msg, Integer count, List<?> data) {
         this.code = code;
         this.msg = msg;
         this.count = count;
         this.data = data;
     }
 
-    public PageInfo() {
+    public LayUiTable() {
     }
 
     public Integer getCode() {
