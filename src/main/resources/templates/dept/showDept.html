@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.all.js}"></script>
+</head>
+<body>
+
+
+
+<div class="layui-card">
+    <table class="layui-hide" id="deptTbl" lay-filter="test"></table>
+</div>
+<!--=====================添加模态框==========================-->
+<form class="layui-form" action="" lay-filter="insertForm" id="insertForm" style="display: none">
+    <!-- 修改需要的id -->
+    <input type="text" hidden name="deptId">
+    <div class="layui-form-item">
+        <label class="layui-form-label">部门名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="deptName" required lay-verify="required" placeholder="请输入部门名称" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-inline">
+            <input type="text" name="orderNum" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" lay-text="启用|禁用" checked value="0">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" lay-submit lay-filter="insertDome">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+<!---------------------------检索------------------------------>
+<div class="layui-fluid">
+    <div class="layui-card" style="padding-top: 30px">
+        <form class="layui-form" action="" id="searchForm">
+            <div class="layui-inline">
+                <label class="layui-form-label">部门名称</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="searchDeptName" placeholder="请输入部门名称" autocomplete="off"
+                           class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">创建人</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="searchCreate" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">修改人</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="searchUpdate" placeholder="请输入姓名" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <div class="layui-input-inline">
+                    <button class="layui-btn" lay-submit lay-filter="searachBtn">查找</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="layui-card">
+        <table id="demo" lay-filter="test"></table>
+    </div>
+</div>
+<!--===================表格========================-->
+
+
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button  class="layui-btn layui-btn-sm" lay-event="addDept">添加</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delDept">删除</button>
+    </div>
+</script>
+
+<!--行工具栏-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-sm" lay-event="editDept">编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delDept">删除</a>
+</script>
+
+<script>
+    layui.use(['jquery', 'layer', 'table', 'form'], function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.render();
+        //第一个实例
+        var deptTable = table.render({
+            elem: '#demo'
+            , height: 312
+            , url: '/dept/deptIndex' //数据接口
+            , page: true //开启分页
+            , limit: 5 //默认显示5条
+            , limits: [5, 10, 25, 30]
+            , toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            , cols: [
+                [ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'deptId', title: '编号', width: 130, sort: true, fixed: 'left'}
+                    , {field: 'deptName', title: '部门名称', width: 130}
+                    , {field: 'orderNum', title: '排序', width: 100, sort: true}
+                    // , {field: 'status', title: '状态', width: 100, sort: true}
+                    , {field: 'status', title: '状态', width: 80,
+                    templet: function (d) {
+                        if(d.status==0){
+                            return '<button type="button" class="layui-btn layui-btn-xs">启用</button>'
+                        }else{
+                            return '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger">禁用</button>'
+                        }
+                    }
+                }
+                    , {field: 'createBy', title: '创建人', width: 100}
+                    , {field: 'createTime', title: '创建时间', width: 130}
+                    , {field: 'updateBy', title: '修改人', width: 100, sort: true}
+                    , {field: 'updateTime', title: '修改时间', width: 130, sort: true}
+                    , {fixed: 'right', width: 165, align: 'center', toolbar: '#barDemo'}
+                ]]
+        });
+        table.on('toolbar(test)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id)
+                , data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'addDept':
+                    // layer.msg('添加');
+                    layer.open({
+                        title: '添加部门'
+                        , type: 1
+                        , area: ['500px', '300px']
+                        , content: $('#insertForm')
+                    });
+                    break;
+                case 'delDept':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        // layer.msg('删除');
+                        // console.log(checkStatus.data);
+                        layer.confirm('真的删除行么', function (index) {
+                            $.ajax({
+                                url: "/dept/delDepts",
+                                type: "post",
+                                dataType: "json",
+                                data: JSON.stringify(checkStatus.data),
+                                contentType: "application/json",
+                                success: function (dataInfo) {
+                                    if (dataInfo.state) {
+                                        //成功后关闭所有弹出框
+                                        layer.closeAll();
+                                        layer.msg(dataInfo.msg);
+                                        //表格刷新
+                                        deptTable.reload();
+                                    } else {
+                                        layer.msg(dataInfo.msg);
+                                    }
+                                }
+                            });
+                        })
+                        break;
+                    }
+            };
+        });
+
+
+        //监听查询表单的提交事件
+        form.on('submit(searachBtn)', function (data) {
+            //把需要的值转一下
+            var searchDeptName = data.field.searchDeptName;
+            var searchCreate = data.field.searchCreate;
+            var searchUpdate = data.field.searchUpdate;
+            //执行重载
+            deptTable.reload({
+                page: {
+                    //重新从第 1 页开始
+                    curr: 1
+                }
+                , where: {
+                    searchDeptName: searchDeptName,
+                    searchCreate: searchCreate,
+                    searchUpdate: searchUpdate
+                }
+                //此处可以写url，如果不写默认去找表格请求的url
+                , mothod: 'post'
+            });
+            return false;
+        });
+        //监听提交
+        form.on('submit(insertDome)', function (data) {
+            data.field.status = data.field.status ? 0 : 1
+            var url;
+            if (data.field.deptId==null||data.field.deptId==undefined||data.field.deptId=="") {
+                url="/dept/saveDept";
+            }else {
+                url="/dept/updateDep";
+            }
+            console.log(url);
+            console.log(data.field);
+            $.ajax({
+                url: url,
+                type: "post",
+                dataType: "json",
+                data: data.field,
+                success: function (dataInfo) {
+                    if (dataInfo.status) {
+                        layer.closeAll();
+                        layer.msg(dataInfo.msg);
+                        deptTable.reload();
+                        $('#insertForm')[0].reset();
+                        // form.render();//必须写
+                    } else {
+                        layer.msg(dataInfo.msg);
+                    }
+                }
+            });
+            return false;
+        });
+
+        //监听行工具事件
+        table.on('tool(test)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'delDept') {
+                layer.confirm('真的删除行么', function (index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构
+                    // layer.close(index);
+                    //向服务端发送删除指令
+                    $.ajax({
+                        url: "/dept/delDep",
+                        type: "post",
+                        dataType: "json",
+                        data: {deptId: data.deptId},
+                        success: function (dataInfo) {
+                            if (dataInfo.status) {
+                                layer.closeAll();
+                                layer.msg(dataInfo.msg);
+                                deptTable.reload();
+                            } else {
+                                layer.msg(dataInfo.msg);
+                            }
+                        }
+                    });
+                });
+            } else if (layEvent === 'editDept') {
+                // layer.msg('编辑操作');
+                console.log(data)
+                layer.open({
+                    title: '编辑部门'
+                    , type: 1
+                    , area: ['500px', '300px']
+                    , content: $('#insertForm')
+                });
+
+                $.ajax({
+                    url: "/dept/selectDepById",
+                    type: "post",
+                    dataType: "json",
+                    data: {deptId: data.deptId},
+                    success: function (dataInfo) {
+                        form.val("insertForm", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                            "deptId": dataInfo.data.deptId
+                            , "deptName": dataInfo.data.deptName // "name": "value"
+                            , "orderNum": dataInfo.data.orderNum
+                            , "status": dataInfo.data.status == 0 ? true : false
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>

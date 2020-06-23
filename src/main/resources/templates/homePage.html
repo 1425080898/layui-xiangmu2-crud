@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+</head>
+<!--<span th:text="${session.menuTree}"></span>-->
+<body class="layui-layout-body">
+<div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+        <div class="layui-logo">后台管理系统</div>
+        <!-- 头部区域（可配合layui已有的水平导航） -->
+        <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item">
+                <a href="javascript:;">
+                    <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                    <span th:text="${session.loginName}"></span>
+                </a>
+                <dl class="layui-nav-child">
+                    <dd><a href="">基本资料</a></dd>
+                    <dd><a href="">安全设置</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item"><a href="/loginOut">注销</a></li>
+        </ul>
+    </div>
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree"  lay-filter="test">
+                <li th:each="menu:${session.menuTree}" class="layui-nav-item layui-nav-itemed" >
+                    <a class="" href="javascript:;" th:text="${menu.title}"></a>
+                    <dl class="layui-nav-child" th:each="child:${menu.children}">
+                        <dd><a th:href="${child.url}" th:text="${child.title}"></a></dd>
+                    </dl>
+                </li>
+                <!--<li class="layui-nav-item">-->
+                    <!--<a href="javascript:;">解决方案</a>-->
+                    <!--<dl class="layui-nav-child">-->
+                        <!--<dd><a href="javascript:;">列表一</a></dd>-->
+                        <!--<dd><a href="javascript:;">列表二</a></dd>-->
+                        <!--<dd><a href="">超链接</a></dd>-->
+                    <!--</dl>-->
+                <!--</li>-->
+                <!--<li class="layui-nav-item"><a href="">云市场</a></li>-->
+                <!--<li class="layui-nav-item"><a href="">发布商品</a></li>-->
+            </ul>
+        </div>
+    </div>
+
+    <div class="layui-body">
+        <iframe  id="iframMain" src="" style="width: 100%;height: 100%"></iframe>
+    </div>
+
+    <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        ? layui.com - 底部固定区域
+    </div>
+</div>
+<script th:src="@{/layui/layui.all.js}"></script>
+<script>
+    //JavaScript代码区域
+    layui.use(['jquery','layer','element','form'], function(){
+        var element = layui.element;
+        var $ = layui.jquery;
+        var layer = layui.layer;
+        var form = layui.form;
+
+        $(function () {
+            $("dd>a").click(function (e) {
+                //阻断超链接的跳转事件
+                e.preventDefault();
+                //取得超链接对象的href属性赋值给iframe的src舒兴国
+                $("#iframMain").attr("src",$(this).attr("href"));
+            })
+        })
+    });
+
+
+</script>
+
+</body>
+</html>
