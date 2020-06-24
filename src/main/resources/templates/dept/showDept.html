@@ -11,25 +11,25 @@
 
 
 
-<div class="layui-card">
+<!--<div class="layui-card">
     <table class="layui-hide" id="deptTbl" lay-filter="test"></table>
-</div>
+</div>-->
 <!--=====================添加模态框==========================-->
 <form class="layui-form" action="" lay-filter="insertForm" id="insertForm" style="display: none">
     <!-- 修改需要的id -->
-    <input type="text" hidden name="deptId">
+    <input type="text" hidden name="deptId" id="deptId">
     <div class="layui-form-item">
         <label class="layui-form-label">部门名称</label>
         <div class="layui-input-inline">
             <input type="text" name="deptName" required lay-verify="required" placeholder="请输入部门名称" autocomplete="off"
-                   class="layui-input">
+                   class="layui-input" id="deptName">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">排序</label>
         <div class="layui-input-inline">
-            <input type="text" name="orderNum" required lay-verify="required" placeholder="请输入密码" autocomplete="off"
-                   class="layui-input">
+            <input type="text" name="orderNum" required lay-verify="required" placeholder="请输入数字" autocomplete="off"
+                   class="layui-input" id="orderNum">
         </div>
     </div>
     <div class="layui-form-item">
@@ -40,7 +40,7 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="insertDome">立即提交</button>
+            <button class="layui-btn" lay-submit lay-filter="insertDome" id="saveBtn">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
@@ -71,7 +71,7 @@
             <div class="layui-inline">
                 <div class="layui-input-inline">
                     <button class="layui-btn" lay-submit lay-filter="searachBtn">查找</button>
-                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    <button type="reset" class="layui-btn layui-btn-primary" id="resetBtn">重置</button>
                 </div>
             </div>
         </form>
@@ -97,10 +97,13 @@
 </script>
 
 <script>
-    layui.use(['jquery', 'layer', 'table', 'form'], function () {
+    layui.use(['jquery', 'layer', 'table', 'form','layedit', 'laydate'], function () {
         var table = layui.table;
         var $ = layui.jquery;
         var form = layui.form;
+        var layedit = layui.layedit;
+        var laydate = layui.laydate;
+
         form.render();
         //第一个实例
         var deptTable = table.render({
@@ -201,8 +204,50 @@
             });
             return false;
         });
+
+        // 部门名称校验
+        $("#deptName").blur(function () {
+            $.ajax({
+               url:"/dept/selectDeptByName",
+               type:"post",
+               dataType:"json",
+               data:{deptId:$("#deptId").val(),
+                     deptName:$("#deptName").val()},
+               success:function (data) {
+                   if (data.status == false) {
+                       layer.msg(data.msg, {icon: 1, shade: 0.4, time: 1000}, function () {
+                           $("#saveBtn").hide();
+                       });
+                   }if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test($("#deptName").val())) {
+                       layer.msg("部门名称不能有特殊字符", {icon: 1, shade: 0.4, time: 1000}, function () {
+                           $("#saveBtn").hide();
+                       });
+                   }else if(!/^(?!\d*$)/.test($("#deptName").val())){
+                       layer.msg("部门名称不能全为数字", {icon: 1, shade: 0.4, time: 1000}, function () {
+                           $("#saveBtn").hide();
+                       });
+                   }else {
+                       $("#saveBtn").show();
+                   }
+               }
+            });
+        });
+
+        // 排序校验
+        $("#orderNum").blur(function () {
+            if(!/^\d*[1-9]\d*$/.test($("#orderNum").val())){
+                layer.msg("排序的值必须为正整数", {icon: 1, shade: 0.4, time: 1000}, function () {
+                    //$("#saveBtn").addClass("layui-btn-disabled");
+                    $("#saveBtn").hide();
+                });
+            }else {
+                $("#saveBtn").show();
+            }
+        });
+
         //监听提交
         form.on('submit(insertDome)', function (data) {
+
             data.field.status = data.field.status ? 0 : 1
             var url;
             if (data.field.deptId==null||data.field.deptId==undefined||data.field.deptId=="") {
@@ -259,7 +304,6 @@
                 });
             } else if (layEvent === 'editDept') {
                 // layer.msg('编辑操作');
-                console.log(data)
                 layer.open({
                     title: '编辑部门'
                     , type: 1
@@ -282,6 +326,13 @@
                     }
                 });
             }
+        });
+
+
+        // 检索重置重载table
+        $("#resetBtn").click(function () {
+            alert("#");
+
         });
     });
 </script>

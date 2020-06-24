@@ -1,6 +1,7 @@
 package com.aaa.service;
 
 import com.aaa.entity.Dept;
+import com.aaa.entity.Result;
 import com.baomidou.mybatisplus.service.IService;
 
 /**
@@ -12,5 +13,5 @@ import com.baomidou.mybatisplus.service.IService;
  * @since 2020-06-13
  */
 public interface DeptService extends IService<Dept> {
-
+    public Result selectDeptByName(Dept dept);
 }

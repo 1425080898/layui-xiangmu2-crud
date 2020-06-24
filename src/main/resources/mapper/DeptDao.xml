@@ -19,5 +19,24 @@
     <sql id="Base_Column_List">
         dept_id AS deptId, dept_name AS deptName, order_num AS orderNum, status, del_flag AS delFlag, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime
     </sql>
+    <select id="selectDeptByNameAndId" resultType="com.aaa.entity.Dept"
+            parameterType="com.aaa.entity.Dept">
+        SELECT
+            *
+        FROM
+            tbl_dept a
+        WHERE
+            a.dept_name = #{deptName}
+        AND a.dept_id != #{deptId}
+    </select>
+    <select id="selectDeptByName" resultType="com.aaa.entity.Dept"
+            parameterType="com.aaa.entity.Dept">
+        SELECT
+            *
+        FROM
+            tbl_dept a
+        WHERE
+            a.dept_name = #{deptName}
+    </select>
 
 </mapper>

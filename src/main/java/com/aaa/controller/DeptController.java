@@ -1,19 +1,17 @@
 package com.aaa.controller;
 
 import com.aaa.aop.SaveOrUpdateEntityAnn;
+import com.aaa.entity.LayUiTable;
 import com.aaa.entity.Result;
 import com.aaa.entity.Dept;
-import com.aaa.entity.PageInfo;
 import com.aaa.service.DeptService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,13 +33,10 @@ public class DeptController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/deptIndex")
-    public PageInfo deptIndex(Integer page, Integer limit,
-                              String searchDeptName,String searchCreate,String searchUpdate) {
+    public LayUiTable deptIndex(Integer page, Integer limit,
+                                String searchDeptName, String searchCreate, String searchUpdate) {
         Wrapper<Dept> wrapper = new EntityWrapper<>();
         //条件查询 判断前台的值是否为空 不为空就like查询
-        if (searchDeptName!=null&&!"".equals(searchDeptName)){
-            wrapper.like("dept_name", searchDeptName);
-        }
         if (searchDeptName!=null&&!"".equals(searchDeptName)){
             wrapper.like("dept_name", searchDeptName);
         }
@@ -61,8 +56,8 @@ public class DeptController extends BaseController{
         Page<Dept> deptPage = deptService.selectPage(deptInfo, wrapper);
         int i = deptService.selectCount(wrapper);
         List<Dept> records = deptPage.getRecords();
-        PageInfo pageInfo = new PageInfo(0, "查询成功", i, records);
-        return pageInfo;
+        LayUiTable LayUiTable = new LayUiTable(0, "查询成功", i, records);
+        return LayUiTable;
     }
 
 
@@ -135,6 +130,23 @@ public class DeptController extends BaseController{
         }else {
             return super.error();
         }
+    }
+
+    /**
+     * create by: DaoChen
+     * description: 根据用户名查看数据库是否已经存在
+     * create time: 2020/6/24 9:57
+     *
+     No such property: code for class: Script1
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/selectDeptByName")
+    public Result selectDeptByName(Dept dept) {
+        System.out.println("------------------------------");
+        System.out.println(dept.getDeptName());
+        System.out.println("------------------------------");
+        return deptService.selectDeptByName(dept);
     }
 }
 
