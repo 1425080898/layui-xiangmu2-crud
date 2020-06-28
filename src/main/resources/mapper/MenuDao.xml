@@ -24,6 +24,9 @@
     <sql id="Base_Column_List">
         menu_id AS menuId, menu_name AS menuName, parent_id AS parentId, order_num AS orderNum, url, menu_type AS menuType, visible, perms, icon, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, remark
     </sql>
+    <select id="selectParent" resultMap="BaseResultMap">
+        SELECT menu_name,menu_id from tbl_menu where menu_type in('M','C')
+    </select>
     <select id="selectMuneByUserName" resultMap="BaseResultMap">
        SELECT
         DISTINCT m.*
@@ -57,5 +60,6 @@
         WHERE
             c.user_id = #{userId}
     </select>
+
 
 </mapper>

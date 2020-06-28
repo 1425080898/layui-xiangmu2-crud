@@ -56,5 +56,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
     public List<String> selectPermsByName(Integer userId) {
         return menuDao.selectPermsByName(userId);
     }
+
+    @Override
+    public List<Menu> selectParent() {
+        return menuDao.selectParent();
+    }
 }
 
