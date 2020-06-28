@@ -1,12 +1,20 @@
 package com.aaa.entity;
 
 import com.baomidou.mybatisplus.enums.IdType;
+
+
+import java.util.Arrays;
 import java.util.Date;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * <p>
@@ -16,6 +24,7 @@ import java.io.Serializable;
  * @author Mr.Liu
  * @since 2020-06-13
  */
+@Data
 @TableName("tbl_role")
 public class Role extends Model<Role> {
 
@@ -59,6 +68,10 @@ public class Role extends Model<Role> {
      * 创建时间
      */
     @TableField("create_time")
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd"
+    )
     private Date createTime;
     /**
      * 更新者
@@ -68,12 +81,38 @@ public class Role extends Model<Role> {
     /**
      * 更新时间
      */
+    @DateTimeFormat(pattern="yyyy-MM-dd")
+    @JsonFormat(
+            pattern = "yyyy-MM-dd"
+    )
     @TableField("update_time")
     private Date updateTime;
     /**
      * 备注
      */
     private String remark;
+
+    @Override
+    public String toString() {
+        return "Role{" +
+                "roleId=" + roleId +
+                ", roleName='" + roleName + '\'' +
+                ", roleKey='" + roleKey + '\'' +
+                ", roleSort=" + roleSort +
+                ", status='" + status + '\'' +
+                ", delFlag='" + delFlag + '\'' +
+                ", createBy='" + createBy + '\'' +
+                ", createTime=" + createTime +
+                ", updateBy='" + updateBy + '\'' +
+                ", updateTime=" + updateTime +
+                ", remark='" + remark + '\'' +
+                '}';
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
+
 
 
     public Integer getRoleId() {
@@ -169,20 +208,4 @@ public class Role extends Model<Role> {
         return this.roleId;
     }
 
-    @Override
-    public String toString() {
-        return "Role{" +
-        "roleId=" + roleId +
-        ", roleName=" + roleName +
-        ", roleKey=" + roleKey +
-        ", roleSort=" + roleSort +
-        ", status=" + status +
-        ", delFlag=" + delFlag +
-        ", createBy=" + createBy +
-        ", createTime=" + createTime +
-        ", updateBy=" + updateBy +
-        ", updateTime=" + updateTime +
-        ", remark=" + remark +
-        "}";
-    }
 }

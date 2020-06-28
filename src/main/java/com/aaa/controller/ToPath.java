@@ -80,4 +80,9 @@ public class ToPath {
         model.addAttribute("roleList",roleList);
         return "user/toShowUser";
     }
+
+    @RequestMapping("/roleList")
+    public String roleList(){
+        return "/role/roleList";
+    }
 }

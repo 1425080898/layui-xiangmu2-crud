@@ -33,5 +33,22 @@
         WHERE
             b.user_id = #{userId}
     </select>
+    <!-- 新增-->
 
+
+    <insert id="insertRole" keyProperty="roleId" useGeneratedKeys="true" parameterType="com.aaa.entity.Role">insert into tbl_role(role_name,role_key,role_sort,status,create_by,create_time,update_by,update_time,remark)values (#{roleName},#{roleKey},#{roleSort},#{status},#{createBy},#{createTime},#{updateBy},#{updateTime},#{remark}) </insert>
+
+
+    <select id="selectByIdAndRole" resultType="com.aaa.entity.Role">
+    select * from tbl_role
+
+    <where>
+
+    <if test="roleName !=null and roleName !=''">and role_name = #{roleName} </if>
+
+    <if test="roleId !=null and roleId !=''">and role_id != #{roleId} </if>
+
+</where>
+
+</select>
 </mapper>

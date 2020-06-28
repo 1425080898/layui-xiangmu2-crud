@@ -2,6 +2,7 @@ package com.aaa.util;
 
 import com.aaa.entity.LayUiTree;
 import com.aaa.entity.Menu;
+import com.aaa.entity.RoleMenu;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,4 +80,19 @@ public class TreeUtil {
         return childrenTree;
     }
 
+
+    //查询所有的选中树
+    public static void selectAll(List<LayUiTree> layUiTreeList,List<RoleMenu> roleMenus){
+        for(int i = 0;i<layUiTreeList.size();i++){
+            LayUiTree layUiTree = layUiTreeList.get(i);
+            for (int j = 0; j <roleMenus.size() ; j++) {
+                RoleMenu roleMenu = roleMenus.get(j);
+                if (layUiTree.getId()==roleMenu.getMenuId()){
+                    layUiTree.setChecked(true);
+                    roleMenus.remove(j);
+                    selectAll(layUiTree.getChildren(), roleMenus);
+                }
+            }
+        }
+    }
 }
