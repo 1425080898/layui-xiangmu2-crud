@@ -1,17 +1,23 @@
 package com.aaa.shiro;
 
 import com.aaa.entity.User;
+import com.aaa.service.MenuService;
+import com.aaa.service.RoleService;
 import com.aaa.service.UserService;
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
+import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.apache.shiro.util.ByteSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -31,6 +37,10 @@ public class MyRealm extends AuthorizingRealm {
      * @return
      */
     private UserService userService;
+    @Autowired
+    private MenuService menuService;
+    @Autowired
+    private RoleService roleService;
 
     /**
      * shiro安全框架的授权
@@ -40,8 +50,35 @@ public class MyRealm extends AuthorizingRealm {
      */
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("授权");
-        return null;
+        System.out.println("开始授权");
+        //获取当前用户信息
+        User user = (User) principals.getPrimaryPrincipal();
+        System.out.println(user.getUserId() + "-----" + user.getUserName());
+        //查询用户拥有的角色和权限
+        List<String> roleInfo = roleService.selectRoleByUserId(user.getUserId());
+        System.out.println(roleInfo);
+        List<String> perms = menuService.selectPermsByName(user.getUserId());
+        System.out.println(perms);
+        //将查询的结果添加到授权中去
+        SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
+        info.addRoles(roleInfo);
+        info.addStringPermissions(perms);
+
+        try {
+            //不确定是什么原因导致权限可能会生成一个空值"", 会报错,所以将空值删除
+            if (info != null && info.getStringPermissions() != null) {
+                Set<String> permissions = info.getStringPermissions();
+                for (String permission : permissions) {
+                    if (StringUtils.isEmpty(permission)) {
+                        permissions.remove(permission);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("移除空值权限出错---"+e.getMessage());
+        }
+        return info;
+        //return null;
     }
 
     /**

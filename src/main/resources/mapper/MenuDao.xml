@@ -45,4 +45,17 @@
             )
     </select>
 
+    <!--授权语句-->
+    <select id="selectPermsByName" resultType="java.lang.String"
+            parameterType="java.lang.Integer">
+        SELECT DISTINCT
+            a.perms
+        FROM
+            tbl_menu a
+        JOIN tbl_role_menu b ON a.menu_id = b.menu_id
+        JOIN tbl_user_role c ON b.role_id = b.role_id
+        WHERE
+            c.user_id = #{userId}
+    </select>
+
 </mapper>

@@ -8,6 +8,7 @@ import com.aaa.service.DeptService;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +34,7 @@ public class DeptController extends BaseController{
 
     @ResponseBody
     @RequestMapping("/deptIndex")
+    @RequiresPermissions("system:dept:list")
     public LayUiTable deptIndex(Integer page, Integer limit,
                                 String searchDeptName, String searchCreate, String searchUpdate) {
         Wrapper<Dept> wrapper = new EntityWrapper<>();
@@ -64,6 +66,7 @@ public class DeptController extends BaseController{
     @RequestMapping("/saveDept")
     @ResponseBody
     @SaveOrUpdateEntityAnn(entityClass = Dept.class)
+    @RequiresPermissions("system:dept:add")
     public Result saveDept(Dept dept) {
         boolean insert = deptService.insert(dept);
         if (insert) {
@@ -77,6 +80,7 @@ public class DeptController extends BaseController{
     @RequestMapping("/updateDep")
     @ResponseBody
     @SaveOrUpdateEntityAnn(entityClass = Dept.class)
+    @RequiresPermissions("system:dept:edit")
     public Result updateDep(Dept dept){
         boolean i = deptService.updateById(dept);
         if (i){
@@ -90,6 +94,7 @@ public class DeptController extends BaseController{
 
     @RequestMapping("/selectDepById")
     @ResponseBody
+    @RequiresPermissions({"system:dept:list", "system:dept:edit"})
     public Result selectDepById(Integer deptId) {
         Dept dept = deptService.selectById(deptId);
         if (dept != null) {
@@ -100,6 +105,7 @@ public class DeptController extends BaseController{
     }
     @RequestMapping("/delDep")
     @ResponseBody
+    @RequiresPermissions("system:dept:remove")
     public Result delDep(Dept dept) {
         dept.setDelFlag("2");
         boolean i = deptService.updateById(dept);
@@ -116,6 +122,7 @@ public class DeptController extends BaseController{
     * */
     @RequestMapping("/delDepts")
     @ResponseBody
+    @RequiresPermissions("system:dept:remove")
     public Result delDepts(@RequestBody List<Dept> deptList){
         List<Dept> deptListNew = new ArrayList<>();
         for (Dept dept : deptList) {
@@ -143,9 +150,6 @@ public class DeptController extends BaseController{
     @ResponseBody
     @RequestMapping("/selectDeptByName")
     public Result selectDeptByName(Dept dept) {
-        System.out.println("------------------------------");
-        System.out.println(dept.getDeptName());
-        System.out.println("------------------------------");
         return deptService.selectDeptByName(dept);
     }
 }

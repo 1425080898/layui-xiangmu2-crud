@@ -6,6 +6,22 @@
     <title>Title</title>
     <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
     <script th:src="@{/layui/layui.all.js}"></script>
+
+    <style>
+        /* 功能1：表头单独居中 表内容居中居左自定义 */
+        .layui-table tr th div{text-align:center;}
+
+        /* 功能2：文字超出后 单元格自适应(包括表头 表头单设置) */
+        /*修正表隐藏后高度变化后，固定列 高度变化 取消动画*/
+        .layui-table tr{-webkit-transition: all 0s;}
+        /* 功能2-1 文字超出后 自适应 - 标题区域 */
+        /* 必须声明 DOCTYPE，这样 :first-child 才能在 IE 中生效。 */
+        table.layui-table th div.layui-table-cell,table.layui-table th div.layui-table-cell span:first-child
+        {height:auto !important;white-space:normal;word-break: break-all;word-wrap: break-word;}
+        /* 功能2-2 文字超出后 自适应 - 内容区域 */
+        table td div.layui-table-cell,table td div.layui-table-cell div
+        {height:auto !important;white-space:normal;word-break: break-all;word-wrap: break-word;}
+    </style>
 </head>
 <body>
 
@@ -16,20 +32,18 @@
 </div>-->
 <!--=====================添加模态框==========================-->
 <form class="layui-form" action="" lay-filter="insertForm" id="insertForm" style="display: none">
-    <!-- 修改需要的id -->
-    <input type="text" hidden name="deptId" id="deptId">
     <div class="layui-form-item">
         <label class="layui-form-label">部门名称</label>
         <div class="layui-input-inline">
             <input type="text" name="deptName" required lay-verify="required" placeholder="请输入部门名称" autocomplete="off"
-                   class="layui-input" id="deptName">
+                   class="layui-input deptName">
         </div>
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">排序</label>
         <div class="layui-input-inline">
             <input type="text" name="orderNum" required lay-verify="required" placeholder="请输入数字" autocomplete="off"
-                   class="layui-input" id="orderNum">
+                   class="layui-input orderNum">
         </div>
     </div>
     <div class="layui-form-item">
@@ -40,11 +54,44 @@
     </div>
     <div class="layui-form-item">
         <div class="layui-input-block">
-            <button class="layui-btn" lay-submit lay-filter="insertDome" id="saveBtn">立即提交</button>
+            <button class="layui-btn saveBtn" lay-submit lay-filter="insertDome">立即提交</button>
             <button type="reset" class="layui-btn layui-btn-primary">重置</button>
         </div>
     </div>
 </form>
+
+<!-----------------------------------修改模态框--------------------------------------->
+<form class="layui-form" action="" lay-filter="updateForm" id="updateForm" style="display: none">
+    <!-- 修改需要的id -->
+    <input type="text" hidden name="deptId" id="deptId">
+    <div class="layui-form-item">
+        <label class="layui-form-label">部门名称</label>
+        <div class="layui-input-inline">
+            <input type="text" name="deptName" required lay-verify="required" placeholder="请输入部门名称" autocomplete="off"
+                   class="layui-input deptName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">排序</label>
+        <div class="layui-input-inline">
+            <input type="text" name="orderNum" required lay-verify="required" placeholder="请输入数字" autocomplete="off"
+                   class="layui-input orderNum">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="checkbox" name="status" lay-skin="switch" lay-text="启用|禁用" checked value="0">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn saveBtn" lay-submit lay-filter="insertDome">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
 <!---------------------------检索------------------------------>
 <div class="layui-fluid">
     <div class="layui-card" style="padding-top: 30px">
@@ -76,6 +123,8 @@
             </div>
         </form>
     </div>
+
+
     <div class="layui-card">
         <table id="demo" lay-filter="test"></table>
     </div>
@@ -85,30 +134,42 @@
 
 <script type="text/html" id="toolbarDemo">
     <div class="layui-btn-container">
-        <button  class="layui-btn layui-btn-sm" lay-event="addDept">添加</button>
-        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="delDept">删除</button>
+        <button  class="layui-btn layui-btn-sm" lay-event="addDept"
+                 shiro:hasPermission="system:dept:add">
+            <i class="layui-icon layui-icon-addition"></i>
+            添加
+        </button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger"
+                lay-event="delDept" shiro:hasPermission="system:dept:remove">
+            <i class="layui-icon layui-icon-subtraction"></i>
+            删除
+        </button>
     </div>
 </script>
 
 <!--行工具栏-->
 <script type="text/html" id="barDemo">
-    <a class="layui-btn layui-btn-sm" lay-event="editDept">编辑</a>
-    <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delDept">删除</a>
+    <a class="layui-btn layui-btn-sm" lay-event="editDept"
+       shiro:hasPermission="system:dept:edit">
+        <i class="layui-icon layui-icon-edit"></i>
+        编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-sm" lay-event="delDept"
+       shiro:hasPermission="system:dept:remove">
+        <i class="layui-icon layui-icon-delete"></i>
+        删除</a>
 </script>
 
 <script>
-    layui.use(['jquery', 'layer', 'table', 'form','layedit', 'laydate'], function () {
+    layui.use(['jquery', 'layer', 'table', 'form'], function () {
         var table = layui.table;
         var $ = layui.jquery;
         var form = layui.form;
-        var layedit = layui.layedit;
-        var laydate = layui.laydate;
 
-        form.render();
+
         //第一个实例
         var deptTable = table.render({
             elem: '#demo'
-            , height: 312
+            , height: 350
             , url: '/dept/deptIndex' //数据接口
             , page: true //开启分页
             , limit: 5 //默认显示5条
@@ -117,11 +178,10 @@
             , cols: [
                 [ //表头
                     {type: 'checkbox', fixed: 'left'}
-                    , {field: 'deptId', title: '编号', width: 130, sort: true, fixed: 'left'}
-                    , {field: 'deptName', title: '部门名称', width: 130}
-                    , {field: 'orderNum', title: '排序', width: 100, sort: true}
-                    // , {field: 'status', title: '状态', width: 100, sort: true}
-                    , {field: 'status', title: '状态', width: 80,
+                    , {field: 'deptId', title: '编号', width: 88, sort: true, align: 'center'}
+                    , {field: 'deptName', title: '部门名称', width: 130, align: 'center'}
+                    , {field: 'orderNum', title: '排序', width: 88, sort: true, align: 'center'}
+                    , {field: 'status', title: '状态', width: 80, align: 'center',
                     templet: function (d) {
                         if(d.status==0){
                             return '<button type="button" class="layui-btn layui-btn-xs">启用</button>'
@@ -130,11 +190,11 @@
                         }
                     }
                 }
-                    , {field: 'createBy', title: '创建人', width: 100}
-                    , {field: 'createTime', title: '创建时间', width: 130}
-                    , {field: 'updateBy', title: '修改人', width: 100, sort: true}
-                    , {field: 'updateTime', title: '修改时间', width: 130, sort: true}
-                    , {fixed: 'right', width: 165, align: 'center', toolbar: '#barDemo'}
+                    , {field: 'createBy', title: '创建人', width: 100, align: 'center'}
+                    , {field: 'createTime', title: '创建时间', width: 130, align: 'center'}
+                    , {field: 'updateBy', title: '修改人', width: 100, align: 'center'}
+                    , {field: 'updateTime', title: '修改时间', width: 130, sort: true, align: 'center'}
+                    , {fixed: 'right',title:"操作", width: 188, align: 'center', toolbar: '#barDemo'}
                 ]]
         });
         table.on('toolbar(test)', function (obj) {
@@ -142,13 +202,17 @@
                 , data = checkStatus.data; //获取选中的数据
             switch (obj.event) {
                 case 'addDept':
-                    // layer.msg('添加');
+                    //表单重置
+                    $("#insertForm")[0].reset();
+
                     layer.open({
                         title: '添加部门'
                         , type: 1
                         , area: ['500px', '300px']
                         , content: $('#insertForm')
                     });
+                    //将button显示
+                    $(".saveBtn").show();
                     break;
                 case 'delDept':
                     if (data.length === 0) {
@@ -164,9 +228,8 @@
                                 data: JSON.stringify(checkStatus.data),
                                 contentType: "application/json",
                                 success: function (dataInfo) {
-                                    if (dataInfo.state) {
+                                    if (dataInfo.status) {
                                         //成功后关闭所有弹出框
-                                        layer.closeAll();
                                         layer.msg(dataInfo.msg);
                                         //表格刷新
                                         deptTable.reload();
@@ -206,42 +269,51 @@
         });
 
         // 部门名称校验
-        $("#deptName").blur(function () {
-            $.ajax({
-               url:"/dept/selectDeptByName",
-               type:"post",
-               dataType:"json",
-               data:{deptId:$("#deptId").val(),
-                     deptName:$("#deptName").val()},
-               success:function (data) {
-                   if (data.status == false) {
-                       layer.msg(data.msg, {icon: 1, shade: 0.4, time: 1000}, function () {
-                           $("#saveBtn").hide();
-                       });
-                   }if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test($("#deptName").val())) {
-                       layer.msg("部门名称不能有特殊字符", {icon: 1, shade: 0.4, time: 1000}, function () {
-                           $("#saveBtn").hide();
-                       });
-                   }else if(!/^(?!\d*$)/.test($("#deptName").val())){
-                       layer.msg("部门名称不能全为数字", {icon: 1, shade: 0.4, time: 1000}, function () {
-                           $("#saveBtn").hide();
-                       });
-                   }else {
-                       $("#saveBtn").show();
-                   }
-               }
-            });
+        $(".deptName").blur(function () {
+            var deptName = $(this).val();
+            if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(deptName)) {
+                layer.msg("部门名称不能有特殊字符", {icon: 2, shade: 0.4, time: 1000}, function () {
+                    $(".saveBtn").hide();
+                });
+            }else if(!/^(?!\d*$)/.test(deptName)){
+                layer.msg("部门名称不能全为数字", {icon: 2, shade: 0.4, time: 1000}, function () {
+                    $(".saveBtn").hide();
+                });
+            }else {
+                $.ajax({
+                    url:"/dept/selectDeptByName",
+                    type:"post",
+                    dataType:"json",
+                    data:{deptId:$("#deptId").val(),
+                        deptName:deptName},
+                    success:function (data) {
+                        if (data.status == false) {
+                            layer.msg(data.msg, {icon: 2, shade: 0.4, time: 1000}, function () {
+                                $(".saveBtn").hide();
+                            });
+                        }else {
+                            layer.msg(data.msg, {icon: 1, shade: 0.4, time: 1000}, function () {
+                                $(".saveBtn").hide();
+                            });
+                            $(".saveBtn").show();
+                        }
+                    }
+                });
+            }
         });
 
         // 排序校验
-        $("#orderNum").blur(function () {
-            if(!/^\d*[1-9]\d*$/.test($("#orderNum").val())){
-                layer.msg("排序的值必须为正整数", {icon: 1, shade: 0.4, time: 1000}, function () {
+        $(".orderNum").blur(function () {
+            var orderNum = $(this).val();
+            if(!/^\d*[1-9]\d*$/.test(orderNum)){
+                layer.msg("排序的值必须为正整数", {icon: 2, shade: 0.4, time: 1000}, function () {
                     //$("#saveBtn").addClass("layui-btn-disabled");
-                    $("#saveBtn").hide();
+                    $(".saveBtn").hide();
                 });
             }else {
-                $("#saveBtn").show();
+                layer.msg(data.msg, {icon: 1, shade: 0.4, time: 1000}, function () {
+                    $(".saveBtn").show();
+                });
             }
         });
 
@@ -255,8 +327,7 @@
             }else {
                 url="/dept/updateDep";
             }
-            console.log(url);
-            console.log(data.field);
+
             $.ajax({
                 url: url,
                 type: "post",
@@ -308,8 +379,10 @@
                     title: '编辑部门'
                     , type: 1
                     , area: ['500px', '300px']
-                    , content: $('#insertForm')
+                    , content: $('#updateForm')
                 });
+                //将button显示
+                $(".saveBtn").show();
 
                 $.ajax({
                     url: "/dept/selectDepById",
@@ -317,7 +390,7 @@
                     dataType: "json",
                     data: {deptId: data.deptId},
                     success: function (dataInfo) {
-                        form.val("insertForm", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                        form.val("updateForm", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
                             "deptId": dataInfo.data.deptId
                             , "deptName": dataInfo.data.deptName // "name": "value"
                             , "orderNum": dataInfo.data.orderNum
@@ -331,8 +404,7 @@
 
         // 检索重置重载table
         $("#resetBtn").click(function () {
-            alert("#");
-
+            // 有bug
         });
     });
 </script>

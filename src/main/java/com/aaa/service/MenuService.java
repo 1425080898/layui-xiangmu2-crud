@@ -17,4 +17,6 @@ import java.util.Map;
  */
 public interface MenuService extends IService<Menu> {
     List<LayUiTree> selectMuneByUserName(String loginName);
+
+    public List<String> selectPermsByName(Integer userId);
 }

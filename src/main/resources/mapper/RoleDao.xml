@@ -22,4 +22,16 @@
         role_id AS roleId, role_name AS roleName, role_key AS roleKey, role_sort AS roleSort, status, del_flag AS delFlag, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, remark
     </sql>
 
+    <!--查询当前用户拥有的角色-->
+    <select id="selectRoleByUserId" resultType="java.lang.String"
+            parameterType="java.lang.Integer">
+        SELECT
+            a.role_key
+        FROM
+            tbl_role a
+        JOIN tbl_user_role b ON a.role_id = b.role_id
+        WHERE
+            b.user_id = #{userId}
+    </select>
+
 </mapper>

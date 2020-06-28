@@ -21,4 +21,6 @@ import java.util.Map;
 @Mapper
 public interface MenuDao extends BaseMapper<Menu> {
     List<Menu> selectMuneByUserName(@Param("loginName") String loginName);
+
+    public List<String> selectPermsByName(Integer userId);
 }

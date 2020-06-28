@@ -42,5 +42,19 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
 //        List<LayUiTree> layUiTreeList = TreeUtil2.fromMenuListToLayUiTree(menuList);
         return layUiTreeList;
     }
+
+    /**
+     * create by: DaoChen
+     * description: 根据用户id查询它拥有的权限
+     * create time: 2020/6/25 11:41
+     *
+     No such property: code for class: Script1
+     * @return
+     */
+
+    @Override
+    public List<String> selectPermsByName(Integer userId) {
+        return menuDao.selectPermsByName(userId);
+    }
 }
 

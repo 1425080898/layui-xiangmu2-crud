@@ -94,7 +94,7 @@ public class ShiroConfig {
      * 设置shiro的方言
      * @return
      */
-    @Bean
+    @Bean(name = "ShiroDialect")
     public ShiroDialect shiroDialect(){
         return new ShiroDialect();
     }
