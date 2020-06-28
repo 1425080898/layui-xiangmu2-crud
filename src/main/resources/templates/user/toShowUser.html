@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css}">
+    <script th:src="@{/layui/layui.all.js}"></script>
+    <!--<style>-->
+    <!--.layui-table-cell .layui-form-checkbox[lay-skin="primary"]{-->
+    <!--top: 50%;-->
+    <!--transform: translateY(-50%);-->
+    <!--}-->
+    <!--</style>-->
+</head>
+<body>
+
+
+<!--新增表单-->
+<form class="layui-form" id="addUserForm" style="display: none"> <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <div class="layui-form-item">
+        <label class="layui-form-label">登录名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="loginName" id="loginName" placeholder="请输入登录名" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">密码</label>
+        <div class="layui-input-inline">
+            <input type="text" name="password" required lay-verify="required" placeholder="请设置密码" autocomplete="off"
+                   class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">真实姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="userName" placeholder="请输入真实姓名" autocomplete="off" class="layui-input userName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">部门</label>
+        <div class="layui-input-inline">
+            <select name="deptId" class="deptSelect" lay-filter="aihao">
+                <option></option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="phonenumber" id="phonenumber" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">单选框</label>
+        <div class="layui-input-inline">
+            <input type="radio" name="sex" value="0" title="男">
+            <input type="radio" name="sex" value="1" title="女" checked>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input name="status" type="checkbox" lay-skin="switch" lay-text="启用|禁用" checked value="0">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" th:each="role:${roleList}" th:value="${role.roleId}" th:text="${role.roleName}"
+                   lay-skin="primary" name="inRoleId">
+        </div>
+    </div>
+    <input hidden="hidden" name="salt">
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="addUserBtn" lay-submit lay-filter="addUserBtn">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+<!--修改模态框-->
+
+<form class="layui-form" id="updateUserForm" lay-filter="updateUserForm" style="display: none">
+    <!-- 提示：如果你不想用form，你可以换成div等任何一个普通元素 -->
+    <input hidden="hidden" name="userId" id="userId">
+    <div class="layui-form-item">
+        <label class="layui-form-label">登录名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="loginName" id="upLoginName" placeholder="请输入登录名" autocomplete="off" class="layui-input loginName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">真实姓名</label>
+        <div class="layui-input-inline">
+            <input type="text" name="userName" placeholder="请输入真实姓名" autocomplete="off" class="layui-input userName">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">部门</label>
+        <div class="layui-input-inline">
+            <select name="deptId" class="deptSelect" lay-filter="aihao">
+                <option></option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">邮箱</label>
+        <div class="layui-input-inline">
+            <input type="text" name="email" placeholder="请输入邮箱" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">手机号</label>
+        <div class="layui-input-inline">
+            <input type="text" name="phonenumber" placeholder="请输入手机号" autocomplete="off" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">单选框</label>
+        <div class="layui-input-block">
+            <input type="radio" name="sex" value="0" title="男">
+            <input type="radio" name="sex" value="1" title="女" checked>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-inline">
+            <input name="status" type="checkbox" lay-skin="switch" lay-text="启用|禁用" checked value="0">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <label class="layui-form-label">角色</label>
+        <div class="layui-input-inline">
+            <input type="checkbox" th:each="role:${roleList}" th:value="${role.roleId}" th:text="${role.roleName}"
+                   lay-skin="primary" name="upRoleId">
+        </div>
+    </div>
+    <input hidden="hidden" name="salt">
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn" id="updateUserBtn" lay-submit lay-filter="updateUserBtn">立即提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+    </div>
+</form>
+
+
+<div class="layui-row layui-col-space15">
+    <form class="layui-form" action="" id="searchForm">
+        <div class="layui-card">
+            <div class="layui-card-header"></div>
+            <div class="layui-card-body" pad15="">
+                <div class="layui-form">
+                    <div class="layui-form-item">
+                        <div class="layui-inline">
+                            <label class="layui-form-label">登录名称</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input"
+                                       placeholder="请输入登录名称" name="loginName">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <label class="layui-form-label">手机号码</label>
+                            <div class="layui-input-inline">
+                                <input type="text" class="layui-input" name="phonenumber"
+                                       placeholder="请输入手机号码">
+                            </div>
+                        </div>
+                        <div class="layui-inline">
+                            <div class="layui-input-inline">
+                                <button class="layui-btn" lay-submit lay-filter="searachBtn">查找</button>
+                                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="layui-card">
+        <table id="demo" lay-filter="userTable"></table>
+    </div>
+</div>
+
+<!--头部工具栏-->
+<script type="text/html" id="toolbarDemo">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm " lay-event="addUser">新增</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteUser">删除</button>
+    </div>
+</script>
+
+<!--行内工具栏-->
+<script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-normal layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+</script>
+
+
+<script>
+
+
+    layui.use(['table', 'jquery', 'form', 'tree'], function () {
+        var table = layui.table;
+        var $ = layui.jquery;
+        var form = layui.form;
+        var tree = layui.tree;
+        form.render();//更新全部
+        //第一个实例
+        var userTable = table.render({
+            elem: '#demo'
+            , height: 312
+            , url: '/user/selectUserAndDept' //数据接口
+            , page: true //开启分页
+            , limit: 5
+            , toolbar: '#toolbarDemo' //开启工具栏，此处显示默认图标，可以自定义模板，详见文档
+            , limits: [5, 10, 15, 20]
+            , cols: [
+                [ //表头
+                    {type: 'checkbox', fixed: 'left'}
+                    , {field: 'user_id', title: '用户ID', width: 130, sort: true, fixed: 'left'}
+                    , {field: 'login_name', title: '登录名称', width: 130}
+                    , {field: 'user_name', title: '用户名称', width: 130}
+                    , {field: 'dept_name', title: '部门', width: 130, sort: true}
+                    , {field: 'phonenumber', title: '手机', width: 130}
+                    , {
+                    field: 'status', title: '状态', width: 130,
+                    templet: function (d) {
+                        if (d.status == 0) {
+                            return '<button type="button" class="layui-btn layui-btn-xs">启用</button>'
+                        } else {
+                            return '<button type="button" class="layui-btn layui-btn-xs layui-btn-danger">禁用</button>'
+                        }
+                    }
+                }
+                    , {field: 'createTime', title: '创建时间', width: 160, sort: true}
+                    , {fixed: 'right', width: 165, align: 'center', toolbar: '#barDemo'}
+                ]]
+        });
+
+
+        //监听头工具栏事件
+        table.on('toolbar(userTable)', function (obj) {
+            var checkStatus = table.checkStatus(obj.config.id)
+                , data = checkStatus.data; //获取选中的数据
+            switch (obj.event) {
+                case 'addUser':
+                    $("#addUserForm")[0].reset();
+                    $("#addUserBtn").show();
+                    layer.open({
+                        type: 1
+                        , title: '添加用户'
+                        , area: ['600px', '400px']
+                        , content: $("#addUserForm")
+                    });
+                    break;
+                case 'updateUser':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else if (data.length > 1) {
+                        layer.msg('只能同时编辑一个');
+                    } else {
+                        layer.alert('编辑 [id]：' + checkStatus.data[0].id);
+                    }
+                    break;
+                case 'deleteUser':
+                    if (data.length === 0) {
+                        layer.msg('请选择一行');
+                    } else {
+                        // layer.msg('删除');
+                        layer.confirm('真的删除行么', function (index) {
+
+                            // console.log(data);
+                            $.ajax({
+                                url: "/user/deleteBatchUser",
+                                type: "post",
+                                dataType: "json",
+                                data:JSON.stringify(data),
+                                contentType:"application/json",
+                                success: function (result) {
+
+                                    if (result.status){
+                                        layer.msg(result.msg);
+                                        userTable.reload();
+                                    } else {
+                                        layer.msg(result.msg);
+                                    }
+                                }
+                            });
+                            layer.close(index);
+                        });
+                    }
+                    break;
+            };
+        });
+
+
+        window.deptDropDown = function () {
+            //部门下拉
+            $.ajax({
+                url: "/user/findDeptNames",
+                type: "GET",
+                dataType: "json",
+                async: false,
+                success: function (result) {
+                    if (result.status) {
+                        $.each(result.data, function (index, item) {
+                            $('.deptSelect').append(new Option(item.deptName, item.deptId));
+                        });
+                        //重新渲染
+                        form.render();
+                    } else {
+                        layer.msg(result.msg);
+                    }
+                }
+            });
+        };
+        deptDropDown();
+        //监听行工具事件
+        table.on('tool(userTable)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data //获得当前行数据
+                , layEvent = obj.event; //获得 lay-event 对应的值
+            if (layEvent === 'edit') {
+                $("#updateUserForm")[0].reset();
+                $("#updateUserBtn").show();
+                layer.open({
+                    type: 1
+                    , title: '编辑用户信息'
+                    , area: ['600px', '400px']
+                    , content: $("#updateUserForm")
+                });
+                deptDropDown();
+                $.ajax({
+                    url: "/user/selectUserById",
+                    type: "post",
+                    dataType: "json",
+                    data: {userId: data.user_id},
+                    success: function (result) {
+                        if (result.status) {
+                            form.val("updateUserForm", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                                "loginName": result.data.user.loginName
+                                , "deptId": result.data.user.deptId
+                                , "userName": result.data.user.userName
+                                , "email": result.data.user.email
+                                , "phonenumber": result.data.user.phonenumber
+                                , "sex": result.data.user.sex == 1 ? true : false
+                                , "status": result.data.user.status == 0 ? true : false
+                                , "userId": result.data.user.userId
+                            });
+
+                            //获取每一个checkbox;
+                            var myCheckBox = $("input[name = 'upRoleId']");
+                            //清空所有状态
+                            myCheckBox.prop("checked", false);
+                            //每一次操作有要渲染checkbox
+                            form.render('checkbox');
+                            //遍历循环后台传入的值
+                            for (var i = 0; i < result.data.userRoleList.length; i++) {
+                                //遍历循环checkbox
+                                for (var j = 0; j < myCheckBox.length; j++) {
+                                    //当checkbox的value==后台参数的roleid时
+                                    if (myCheckBox[j].value == result.data.userRoleList[i].roleId) {
+                                        //设置checkbox为选中
+                                        myCheckBox[j].checked = true;
+                                    }
+                                }
+                            }
+                            //完毕之后渲染
+                            form.render('checkbox');
+                        }
+                    }
+                });
+
+            } else if (layEvent === 'del') {
+                layer.confirm('真的删除行么', function (index) {
+                    // obj.del(); //删除对应行（tr）的DOM结构
+                    // layer.close(index);
+                    // //向服务端发送删除指令
+                    $.ajax({
+                        url: "/user/deleteUser",
+                        type: "post",
+                        dataType: "json",
+                        data: {userId: data.user_id},
+                        success: function (result) {
+                            if (result.status) {
+                                //刷新表格
+                                layer.msg(result.msg);
+                                userTable.reload();
+                            } else {
+                                layer.msg(result.msg);
+                            }
+                        }
+                    });
+                    console.log(data);
+                });
+            } else if (layEvent === 'rest') {
+                //updateUserForm
+
+            }
+        });
+
+
+        //监听查询表单的提交事件
+        form.on('submit(searachBtn)', function (data) {
+            //把需要的值转一下
+            console.log(data.field);
+            var loginName = data.field.loginName;
+            var phonenumber = data.field.phonenumber;
+            //执行重载
+            userTable.reload({
+                page: {
+                    //重新从第 1 页开始
+                    curr: 1
+                }
+                , where: {
+                    loginName: loginName,
+                    phonenumber: phonenumber,
+                }
+                //此处可以写url，如果不写默认去找表格请求的url
+                , mothod: 'post'
+            });
+            return false;
+        });
+
+
+        // 获取选中复选框项
+        function selectCheckeds(name) {
+            var checkeds = "";
+            $('input:checkbox[name="' + name + '"]:checked').each(function (i) {
+                if (0 == i) {
+                    checkeds = $(this).val();
+                } else {
+                    checkeds += ("," + $(this).val());
+                }
+            });
+            return checkeds;
+        }
+
+
+        //监听提交
+        form.on('submit(addUserBtn)', function (data) {
+            // layer.msg(JSON.stringify(data.field));
+            data.field.status = data.field.status ? 0 : 1;
+            //拿到复选框的值
+            var checkeds = selectCheckeds("inRoleId");
+            // console.log(checkeds);
+            data.field.salt = checkeds;
+            //把值赋给实体中的salt属性
+            console.log(data.field);
+            //insertUserAndUserRole
+            $.ajax({
+                url: "/user/insertUserAndUserRole",
+                type: "post",
+                dataType: "json",
+                data: data.field,
+                success: function (result) {
+                    if (result.status) {
+                        //关闭表单
+                        layer.closeAll();
+                        //刷新表格
+                        layer.msg(result.msg);
+                        userTable.reload();
+                        $('#addUserForm')[0].reset();
+
+                    } else {
+                        layer.msg(result.msg);
+                    }
+                }
+            });
+            return false;
+        });
+
+
+        //修改监听提交
+        //监听提交
+        form.on('submit(updateUserBtn)', function (data) {
+            data.field.status = data.field.status ? 0 : 1;
+            var checkedValue = selectCheckeds("upRoleId");
+            var array = new Array();
+            var data = {user: data.field, roleIds: checkedValue};
+            array.push(data);
+            $.ajax({
+                url: "/user/saveUserAndUserRole",
+                type: "post",
+                dataType: "json",
+                data: JSON.stringify(array),
+                contentType: "application/json",
+                success: function (result) {
+                    if (result.status) {
+                        layer.closeAll();
+                        //刷新表格
+                        layer.msg(result.msg);
+                        userTable.reload();
+                    } else {
+                        layer.msg(result.msg);
+                    }
+                }
+            });
+            return false;
+        });
+
+
+        //新增校验
+        $("#loginName").blur(function () {
+            var loginName = $(this).val();
+            if (checkNotNull(loginName,"#addUserBtn")==false) return;
+            if (checkRule(loginName,"#addUserBtn") == false) return;
+            $.ajax({
+                url:"/user/uniquenessCheckByLoginName",
+                type:"post",
+                dataType:"json",
+                data:{loginName:$(this).val()},
+                success:function (result) {
+                    if (result.status){
+                        layer.msg("名字不可用");
+                        $("#addUserBtn").hide();
+                    } else{
+                        layer.msg("名字可用");
+                        $("#addUserBtn").show();
+                    }
+                }
+            });
+        });
+        $(".userName").blur(function () {
+            if ( checkNotNull($(this).val(),"#addUserBtn")==false) return;
+        });
+        //新增手机号唯一性校验 unniquenessCheckByPhone
+        $("#phonenumber").blur(function () {
+            if ( checkNotNull($(this).val(),"#addUserBtn")==false) return;
+            $.ajax({
+                url:"/user/unniquenessCheckByPhone",
+                type:"post",
+                dataType:"json",
+                data:{phoneNumber:$(this).val()},
+                success:function (result) {
+                    if (result.status){
+                        layer.msg("手机号不可用");
+                        $("#addUserBtn").hide();
+                    } else{
+                        layer.msg("手机号可用");
+                        $("#addUserBtn").show();
+                    }
+                }
+            });
+        });
+
+
+        //修改登录名唯一性校验
+        $("#upLoginName").blur(function () {
+            var loginName = $(this).val();
+            var userId = $("#userId").val();
+            if (checkNotNull(loginName,"#updateUserBtn")==false) return;
+            if (checkRule(loginName,"#updateUserBtn") == false) return;
+            $.ajax({
+                url:"/user/updateUnniquenessCheckByLoginName",
+                type:"post",
+                dataType:"json",
+                data:{loginName:loginName,userId:userId},
+                success:function (result) {
+                    if (result.status){
+                        layer.msg("名字不可用");
+                        $("#updateUserBtn").hide();
+                    } else{
+                        layer.msg("名字可用");
+                        $("#updateUserBtn").show();
+                    }
+                }
+            });
+        });
+
+
+        window.checkRule = function (result,btn) {
+            if (!new RegExp("^[a-zA-Z0-9_\u4e00-\u9fa5\\s·]+$").test(result)) {
+                layer.msg("登录名称不能有特殊字符", {icon: 2, shade: 0.4, time: 1000}, function () {
+                    $(btn).hide();
+                });
+                return false;
+            }else if(!/^(?!\d*$)/.test(result)){
+                layer.msg("登录名称不能全为数字", {icon: 2, shade: 0.4, time: 1000}, function () {
+                    $(btn).hide();
+                });
+                return false;
+            }else {
+                $(btn).show();
+                return true;
+            }
+        }
+        //检验非空
+        window.checkNotNull = function(data,btn){
+            if (data==null || data==undefined || data==""){
+                layer.msg("不允许为空");
+                $(btn).hide();
+                return false;
+            }else {
+                $(btn).show();
+                return true;
+            }
+        }
+    });
+</script>
+</body>
+</html>

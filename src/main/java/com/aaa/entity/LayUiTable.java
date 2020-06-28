@@ -49,4 +49,14 @@ public class LayUiTable {
     public void setData(List<?> data) {
         this.data = data;
     }
+
+    @Override
+    public String toString() {
+        return "LayUiTable{" +
+                "code=" + code +
+                ", msg='" + msg + '\'' +
+                ", count=" + count +
+                ", data=" + data +
+                '}';
+    }
 }

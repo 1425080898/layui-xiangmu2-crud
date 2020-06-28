@@ -27,5 +27,30 @@
     <sql id="Base_Column_List">
         user_id AS userId, dept_id AS deptId, login_name AS loginName, user_name AS userName, email, phonenumber, sex, avatar, password, salt, status, del_flag AS delFlag, create_by AS createBy, create_time AS createTime, update_by AS updateBy, update_time AS updateTime, remark
     </sql>
+    <select id="selectUserAndDept" resultType="java.util.Map">
+        SELECT
+            u.user_id,d.dept_name,u.login_name,u.user_name,u.phonenumber,u.status,u.create_time,date_format(u.create_time,'%Y-%m-%d') as createTime
+        FROM
+            tbl_user u
+        JOIN tbl_dept d ON u.dept_id = d.dept_id
+        <where>
+            <if test="phonenumber != null and phonenumber != ''">
+                and phonenumber like concat(#{phonenumber},'%')
+            </if>
+            <if test="loginName != null and loginName != ''">
+                and login_name like concat('%',#{loginName},'%')
+            </if>
+            and u.del_flag='1'
+        </where>
+    </select>
 
+    <select id="updateUnniquenessCheckByLoginName" resultType="com.aaa.entity.User">
+        SELECT
+            u.*
+        FROM
+            tbl_user u
+        WHERE
+            u.login_name = #{loginName}
+        AND u.user_id != #{userId}
+    </select>
 </mapper>
