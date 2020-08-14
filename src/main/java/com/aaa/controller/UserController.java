@@ -12,7 +12,6 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -105,6 +104,8 @@ public class UserController extends BaseController {
 //        if (null != phonenumber && !"".equals(phonenumber)){
 //
 //        }
+        //获取当前系统毫秒数
+        long start = System.currentTimeMillis();
         List<Map> mapList = userService.selectUserAndDept(phonenumber,loginName);
         //创建pageinfo对象存储数据
         PageInfo<Map> mapPageInfo = new PageInfo<>(mapList);
@@ -113,6 +114,8 @@ public class UserController extends BaseController {
                 Constants.OPERATION_SUCCESS_INFORMATION,
                 (int) mapPageInfo.getTotal(),
                 mapPageInfo.getList());
+        long end = System.currentTimeMillis();
+        System.out.println("查询时间----------->"+(end-start));
         return layUiTable;
     }
 

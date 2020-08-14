@@ -1,16 +1,16 @@
 package com.aaa;
 
+import com.aaa.dao.UserDao;
 import com.aaa.entity.Dept;
 import com.aaa.entity.LayUiTree;
-import com.aaa.entity.Menu;
 import com.aaa.service.DeptService;
 import com.aaa.service.MenuService;
+import com.aaa.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Map;
 
 @SpringBootTest
 class LayuiXiangmu2CrudApplicationTests {
@@ -19,6 +19,11 @@ class LayuiXiangmu2CrudApplicationTests {
     DeptService deptService;
     @Autowired
     MenuService menuService;
+
+    @Autowired
+    UserService userService;
+    @Autowired
+    UserDao userDao;
 
     @Test
     void contextLoads() {
@@ -50,7 +55,17 @@ class LayuiXiangmu2CrudApplicationTests {
         String replace = str.replace("c", "x");
         System.out.println(str);
         //声明数组
-        int[] i = {1,2,3};
+        int[] i = {1, 2, 3};
         int[] a = new int[]{};
     }
+    @Test
+    void ccc() {
+//        //初始化jedis连接
+//        Jedis jedis = new Jedis("192.168.88.100",6379);
+//        //测试redis服务的连通性
+//        String pong = jedis.ping();
+//        //pong 是成功
+//        System.out.println(pong);
+    }
+
 }

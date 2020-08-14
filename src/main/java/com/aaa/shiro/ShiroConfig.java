@@ -26,30 +26,33 @@ public class ShiroConfig {
      * 定义一个bean，id为方法名
      * <bean id="fdsaf" class=">
      *
-     *     </bean>
+     * </bean>
+     *
      * @return
      */
     @Bean
-    public MyRealm myRealm(){
+    public MyRealm myRealm() {
         MyRealm myRealm = new MyRealm();
         myRealm.setCredentialsMatcher(credentialsMatcher());
         return myRealm;
     }
+
     /**
      * securityManager
      */
     @Bean
-    public DefaultWebSecurityManager defaultWebSecurityManager(){
-        DefaultWebSecurityManager defaultWebSecurityManager= new DefaultWebSecurityManager();
+    public DefaultWebSecurityManager defaultWebSecurityManager() {
+        DefaultWebSecurityManager defaultWebSecurityManager = new DefaultWebSecurityManager();
         defaultWebSecurityManager.setRealm(myRealm());
         return defaultWebSecurityManager;
     }
+
     /**
      * shiroFilterFactorybean
      * shiro的安全过滤器，过滤所有的请求，对请求分类拦截
      */
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(){
+    public ShiroFilterFactoryBean shiroFilterFactoryBean() {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(defaultWebSecurityManager());
 /**
@@ -62,53 +65,58 @@ public class ShiroConfig {
  */
         Map<String, String> map = new LinkedHashMap<>();
         //放行login
-        map.put("/user/login","anon");
-        map.put("/css/**","anon");
-        map.put("/img/**","anon");
-        map.put("/js/**","anon");
-        map.put("/json/**","anon");
-        map.put("/layui/**","anon");
-        map.put("/static/**","anon");
+        map.put("/user/login", "anon");
+        map.put("/css/**", "anon");
+        map.put("/img/**", "anon");
+        map.put("/js/**", "anon");
+        map.put("/json/**", "anon");
+        map.put("/layui/**", "anon");
+        map.put("/static/**", "anon");
         //过滤所有的请求 全部拦截掉
-        map.put("/**","authc");
+        map.put("/**", "authc");
         //授权页面
-       /* map.put("/user/toShowUser","perms[system:user:view]");*/
+        /* map.put("/user/toShowUser","perms[system:user:view]");*/
         shiroFilterFactoryBean.setFilterChainDefinitionMap(map);
         //修改登录页面，所有的未认证的请求都给我滚，滚去登录
         shiroFilterFactoryBean.setLoginUrl("/toLogin");
         return shiroFilterFactoryBean;
     }
+
     /**
      * 实例化密码比较器
      */
     @Bean
-    public CredentialsMatcher credentialsMatcher(){
-        HashedCredentialsMatcher credentialsMatcher= new HashedCredentialsMatcher();
+    public CredentialsMatcher credentialsMatcher() {
+        HashedCredentialsMatcher credentialsMatcher = new HashedCredentialsMatcher();
         //使用md5加密
         credentialsMatcher.setHashAlgorithmName(Constants.ALGORITHM_NAME);
         //加密1000次
         credentialsMatcher.setHashIterations(Constants.HASH_ITERATIONS);
         return credentialsMatcher;
     }
+
     /**
      * 设置shiro的方言
+     *
      * @return
      */
     @Bean(name = "ShiroDialect")
-    public ShiroDialect shiroDialect(){
+    public ShiroDialect shiroDialect() {
         return new ShiroDialect();
     }
+
     /**
      * 开启Shiro注解(如@RequiresRoles,@RequiresPermissions),
      * 需借助SpringAOP扫描使用Shiro注解的类,并在必要时进行安全逻辑验证
      * 配置以下两个bean(DefaultAdvisorAutoProxyCreator和AuthorizationAttributeSourceAdvisor)
      */
     @Bean
-    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator(){
+    public DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator() {
         DefaultAdvisorAutoProxyCreator advisorAutoProxyCreator = new DefaultAdvisorAutoProxyCreator();
         advisorAutoProxyCreator.setProxyTargetClass(true);
         return advisorAutoProxyCreator;
     }
+
     /**
      * 开启aop注解支持
      */

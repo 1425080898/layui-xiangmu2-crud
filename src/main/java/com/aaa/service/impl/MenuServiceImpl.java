@@ -1,18 +1,15 @@
 package com.aaa.service.impl;
 
+import com.aaa.dao.MenuDao;
 import com.aaa.entity.LayUiTree;
 import com.aaa.entity.Menu;
-import com.aaa.dao.MenuDao;
 import com.aaa.service.MenuService;
 import com.aaa.util.TreeUtil;
-import com.aaa.util.TreeUtil2;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.rmi.CORBA.Util;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -39,7 +36,6 @@ public class MenuServiceImpl extends ServiceImpl<MenuDao, Menu> implements MenuS
     public List<LayUiTree> selectMuneByUserName(String loginName) {
         List<Menu> menuList = menuDao.selectMuneByUserName(loginName);
         List<LayUiTree> layUiTreeList = TreeUtil.fromMenuListToLayUiTreeList(menuList);
-//        List<LayUiTree> layUiTreeList = TreeUtil2.fromMenuListToLayUiTree(menuList);
         return layUiTreeList;
     }
 

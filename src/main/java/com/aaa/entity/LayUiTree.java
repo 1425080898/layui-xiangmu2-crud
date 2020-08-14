@@ -16,7 +16,12 @@ public class LayUiTree {
      * id : 2
      * field :
      * spread : true
-     * children : [{"title":"二级2-1","id":5,"field":"","spread":true,"children":[{"title":"三级2-1-1","id":11,"field":""},{"title":"三级2-1-2","id":12,"field":""}]},{"title":"二级2-2","id":6,"field":"","children":[{"title":"三级2-2-1","id":13,"field":""}]}]
+     * children : [{"title":"二级2-1","id":5,"field":"",
+     * "spread":true,"children":[{"title":"三级2-1-1","id":11,"field":""},
+     * {"title":"三级2-1-2","id":12,"field":""}]},
+     * {"title":"二级2-2","id":6,"field":"",
+     * "children":[{"title":"三级2-2-1","id":13,
+     * "field":""}]}]
      */
 
     private String title;

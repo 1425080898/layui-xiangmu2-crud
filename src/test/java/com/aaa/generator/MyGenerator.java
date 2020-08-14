@@ -17,7 +17,7 @@ public class MyGenerator {
         AutoGenerator mpg = new AutoGenerator();
         // 全局配置
         GlobalConfig globalConfig = new GlobalConfig();
-        globalConfig.setOutputDir("L://生成代码//");//输出目录
+        globalConfig.setOutputDir("L://二期实体//");//输出目录
         globalConfig.setFileOverride(true);// 是否覆盖文件
         globalConfig.setActiveRecord(true);// 开启 activeRecord 模式
         globalConfig.setEnableCache(false);// XML 二级缓存
@@ -44,8 +44,8 @@ public class MyGenerator {
         });
         sourceConfig.setDriverName("com.mysql.jdbc.Driver");
         sourceConfig.setUsername("root");
-        sourceConfig.setPassword("123123");
-        sourceConfig.setUrl("jdbc:mysql://127.0.0.1:3306/xiangmu2?characterEncoding=utf8");
+        sourceConfig.setPassword("981127");
+        sourceConfig.setUrl("jdbc:mysql://DaoChen/mobile_online?characterEncoding=utf8");
         mpg.setDataSource(sourceConfig);
         // 策略配置
         StrategyConfig strategyConfig = new StrategyConfig();
@@ -55,7 +55,7 @@ public class MyGenerator {
         mpg.setStrategy(strategyConfig);
         // 包配置
         PackageConfig packageConfig = new PackageConfig();
-        packageConfig.setParent("com.aaa");// 自定义包路径
+        packageConfig.setParent("com.one");// 自定义包路径
         packageConfig.setController("controller");// 这里是控制器包名，默认 web
         packageConfig.setMapper("dao");
         packageConfig.setEntity("entity");

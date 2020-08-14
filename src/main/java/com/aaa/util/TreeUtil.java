@@ -20,8 +20,7 @@ public class TreeUtil {
      * create by: xiaoliu
      * description: 把List<Menu>转换为List<LayUiTree>
      * create time: 2020/6/18 11:23
-     *
-      * @Param: menuList
+     * @Param: menuList
      * @return List<LayUiTree>
      */
     public static List<LayUiTree> fromMenuListToLayUiTreeList(List<Menu> menuList){
@@ -44,7 +43,6 @@ public class TreeUtil {
      * create by: xiaoliu
      * description: 进行递归，封装所有的孩子
      * create time: 2020/6/18 11:24
-     *
      * @Param: LayUiTree,menuList
      * @return LayUiTree
      */

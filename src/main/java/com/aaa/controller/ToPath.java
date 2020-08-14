@@ -1,12 +1,11 @@
 package com.aaa.controller;
 
 import com.aaa.entity.Role;
-import com.aaa.entity.User;
 import com.aaa.service.RoleService;
-import com.aaa.service.UserService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +23,8 @@ public class ToPath {
 
     @Autowired
     private RoleService roleService;
+    @Value("${server.port}")
+    private String port;
 
     /**
      * create by: xiaoliu
@@ -39,7 +40,8 @@ public class ToPath {
     }
 
     @RequestMapping("/toLogin")
-    public String toLogin(){
+    public String toLogin(Model model){
+        model.addAttribute("port",port);
         return "login";
     }
 
@@ -84,5 +86,11 @@ public class ToPath {
     @RequestMapping("/roleList")
     public String roleList(){
         return "/role/roleList";
+    }
+
+    @RequestMapping("/testNginx")
+    public String testNginx(Model model){
+        model.addAttribute("port",port);
+        return "user/testNginx";
     }
 }
